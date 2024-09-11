@@ -26,7 +26,13 @@ export const Payment = () => {
   const [isPaid, setPaid] = useState(false)
 
   useEffect(() => {
-    if (wallet.connected) getAllWallets()
+    if (wallet.connected) {
+      getAllWallets()
+      console.log("Wallet connected")
+      // console.log(wallet)
+    } else {
+      console.log("Wallet not connected.")
+    }
   }, [wallet.connected, isPaid])
 
   const getAllWallets = async () => {
@@ -40,29 +46,36 @@ export const Payment = () => {
   }
 
   const payClicked = async () => {
-    let [payerSigner] = await anchor.web3.PublicKey.findProgramAddress(
-      [utf8.encode('payer'), wallet.publicKey.toBuffer()],
-      program.programId,
+    let [payerSigner, bump] = anchor.web3.PublicKey.findProgramAddressSync(
+      [utf8.encode("payer"), wallet.publicKey.toBuffer()],
+      program.programId
     )
+    // payerSigner+=bump
 
     let payerInfo
-
     try {
+
       payerInfo = await program.account.payerAccount.fetch(payerSigner)
+      console.log("c")
     } catch (e) {
+      console.log(e)
       try {
+        console.log("b")
+        console.log(wallet.publicKey.toBase58())
+        console.log(payerSigner.toBase58())
         await program.rpc.acceptPayment({
           accounts: {
             payerWallet: payerSigner,
             receiver: new PublicKey(
-              'FdGbqLGZQgTpqXc1bKa41YsJTWHPxfwZKmTykjG6Jj1V',
+              'ANh76nb4KVU54fLVyGjaj6atvS3mASDcRTjaEPiSKwqD',
             ),
             authority: wallet.publicKey,
             ...defaultAccounts,
           },
         })
-        alert('Transaction proceed')
+        alert('Transaction successful!')
       } catch (e) {
+        console.log(e)
         alert(e.message)
       }
     }

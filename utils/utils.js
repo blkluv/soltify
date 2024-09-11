@@ -5,6 +5,7 @@ import { STABLE_POOL_IDL, STABLE_POOL_PROGRAM_ID } from './const'
 
 // This command makes an Lottery
 export function getProgramInstance(connection, wallet) {
+  // console.log(wallet.publicKey)
   if (!wallet.publicKey) throw new WalletNotConnectedError()
 
   const provider = new anchor.Provider(
@@ -20,6 +21,8 @@ export function getProgramInstance(connection, wallet) {
 
   // Generate the program client from IDL.
   const program = new anchor.Program(idl, programId, provider)
+
+  console.log(program)
 
   return program
 }

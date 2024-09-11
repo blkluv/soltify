@@ -12,8 +12,12 @@ import { CLUSTER, SOLANA_HOST } from '../utils/const'
 const WalletConnectionProvider = ({ children }) => {
   // const network = process.env.NEXT_PUBLIC_SOLANA_NETWORK as WalletAdapterNetwork;
   const endpoint = useMemo(() => SOLANA_HOST, [])
-
+  console.log("!")
+  
   const wallets = useMemo(() => [new PhantomWalletAdapter()], [])
+
+  console.log(endpoint)
+  console.log(wallets)
 
   return (
     <ConnectionProvider endpoint={endpoint}>
